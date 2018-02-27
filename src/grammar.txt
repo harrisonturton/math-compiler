@@ -1,0 +1,21 @@
+
+expr => num (op num)*
+num  => num | ( expr )
+
+
+BOMDAS = brackets, orders, multiplication, division, addition, subtraction
+
+sub => num (- sub)* | sub
+add => num (+ add)* | div
+div => num (/ div)* | mul
+mul => num (* mul)* | ord
+ord => num (^ ord)* | num
+num => num | ( sub )
+
+sub => num (- sub)* | add
+
+3 * 2 / (2^3+2)
+
+(* 3 (/ 2 (^ 2 (+ 3 2))))
+
+1 + 2 + (3)
