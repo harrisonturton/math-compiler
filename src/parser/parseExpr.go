@@ -21,19 +21,9 @@ func (p *Parser) parseExpr() Expr {
 
 // 1. Brackets, 2. Orders, 3. Mul, 4. Div, 5. Add, 6. Sub
 
-func (p *Parser) parseOrdTerm() Expr {
-	left := p.parseNumber()
-	if isEOF(p.peek()) || p.peek().Token != token.TOK_ORD || isCloseParen(p.peek()) {
-		return left
-	}
-	for p.peek().Token == token.TOK_ORD {
-		op := p.next()
-		right := p.parseNumber()
-		left = BinaryOp{left, op, right}
-	}
-	return left
-}
-
+// 1^(-3*5)
+// (* (^ 1 -) 5)
+// (^ (* 3 5))
 func (p *Parser) parseAddTerm() Expr {
 	left := p.parseMulTerm()
 	if !isAddition(p.peek()) || isEOF(p.peek()) || isCloseParen(p.peek()) {
@@ -61,6 +51,18 @@ func (p *Parser) parseMulTerm() Expr {
 	return left
 }
 
+func (p *Parser) parseOrdTerm() Expr {
+	left := p.parseNumber()
+	if isEOF(p.peek()) || p.peek().Token != token.TOK_ORD || isCloseParen(p.peek()) {
+		return left
+	}
+	for p.peek().Token == token.TOK_ORD {
+		op := p.next()
+		right := p.parseNumber()
+		left = BinaryOp{left, op, right}
+	}
+	return left
+}
 func (p *Parser) parseNumber() Expr {
 	if p.peek().Token == token.TOK_LPAREN {
 		p.ignore() // Ignore starting TOK_LPAREN

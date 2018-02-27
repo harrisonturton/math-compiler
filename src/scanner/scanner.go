@@ -60,6 +60,14 @@ func (s *Scanner) peek() rune {
 	return char
 }
 
+func (s *Scanner) peekBack() rune {
+	s.backup()
+	s.backup()
+	char := s.next()
+	s.next()
+	return char
+}
+
 // Step back one rune
 func (s *Scanner) backup() {
 	s.pos -= s.width

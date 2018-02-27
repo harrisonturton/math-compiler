@@ -47,9 +47,15 @@ func scanOperator(s *Scanner) stateFn {
 	ch := s.next()
 	switch ch {
 	case '+':
+		if isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
+			return scanNumber
+		}
 		s.emit(token.TOK_ADD)
 		return startState
 	case '-':
+		if isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
+			return scanNumber
+		}
 		s.emit(token.TOK_SUB)
 		return startState
 	case '*':
@@ -89,6 +95,10 @@ func isBracket(ch rune) bool {
 
 func isNumber(ch rune) bool {
 	return ch >= '0' && ch <= '9'
+}
+
+func isOpenParen(ch rune) bool {
+	return ch == '('
 }
 
 func isOperator(ch rune) bool {
