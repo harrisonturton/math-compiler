@@ -2,7 +2,6 @@ package parser
 
 import (
 	"../token"
-	"fmt"
 )
 
 /*
@@ -31,7 +30,6 @@ func (p *Parser) parseAddTerm() Expr {
 	}
 	for isAddition(p.peek()) {
 		op := p.next()
-		fmt.Println(p.peek())
 		right := p.parseMulTerm()
 		left = BinaryOp{left, op, right}
 	}
