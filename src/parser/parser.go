@@ -2,88 +2,46 @@ package parser
 
 import (
 	"../token"
-	"fmt"
+	//"fmt"
 )
 
 type Parser struct {
-	tokens    chan token.Token
-	current   token.Token
+	tokens []token.Token
+	pos    int
 }
 
-func NewParser(tokens chan token.Token) *Parser {
-	current := <-tokens
-	return &Parser{tokens, current}
+func NewParser(tokens []token.Token) *Parser {
+	return &Parser{tokens, 0}
 }
 
 func (p *Parser) Parse() Expr {
-	return p.parseAdditionSequence()
+	return p.parseExpr()
 }
 
 // Move the parser one token forwards
 // Return new token
 func (p *Parser) next() token.Token {
-	if p.current.Token == token.TOK_EOF {
-		return p.current
+	if p.pos >= len(p.tokens) || p.tokens[p.pos].Token == token.TOK_EOF {
+		return token.Token{token.TOK_EOF, ""}
 	}
-	tok := p.current
-	p.current = <-p.tokens
+	tok := p.tokens[p.pos]
+	p.pos += 1
 	return tok
 }
 
 // See next token without shifting parser
 func (p *Parser) peek() token.Token {
-	return p.current
+	tok := p.next()
+	p.backup()
+	return tok
+}
+
+// Step back one token
+func (p *Parser) backup() {
+	p.pos -= 1
 }
 
 // Move to next token, ignore current one
 func (p *Parser) ignore() {
 	p.next()
-}
-
-// sub => num (- num)* | add
-//
-
-/*
-P ---> E '$'
-E ---> T {('+'|'-') T}
-T ---> S {('*'|'/') S}
-S ---> F '^' S | F
-F ---> '(' E ')' | char
-*/
-
-func (p *Parser) parseAdditionSequence() Expr {
-	left := p.parseNumber()
-	for p.peek().Token == token.TOK_SUB || p.peek().Token == token.TOK_ADD {
-		op := p.next()
-		right := p.parseNumber()
-		left = BinaryOp{left, op, right}
-		fmt.Println(fmt.Sprintf("lookahead: %s", p.peek().Token))
-
-		// parse num
-		if p.peek().Token != token.TOK_SUB || p.peek().Token != token.TOK_ADD {
-
-		}
-	}
-	return left
-}
-
-func (p *Parser) parseSub() Expr {
-	left := p.parseNumber()
-	if p.peek().Token != token.TOK_SUB {
-		return left
-	}
-	op := p.next()
-	right := p.parseNumber()
-	return BinaryOp{left, op, right}
-}
-
-func (p *Parser) parseNumber() Expr {
-	if p.peek().Token == token.TOK_LPAREN {
-		p.ignore() // Ignore starting TOK_LPAREN
-		expr := p.parseSub()
-		p.ignore() // Ignore closing TOK_RPAREN
-		return expr
-	}
-	tok := p.next()
-	return Number{tok}
 }

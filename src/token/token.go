@@ -57,9 +57,12 @@ func (t Token) String() string {
 		return "+"
 	case TOK_SUB:
 		return "-"
-	}
-	if t.Token == TOK_EOF {
-		return "EOF"
+	case TOK_MUL:
+		return "*"
+	case TOK_ORD:
+		return "^"
+	case TOK_NUMBER:
+		return t.Value
 	}
 	return fmt.Sprintf("[%s %s]", t.Token.String(), t.Value)
 }

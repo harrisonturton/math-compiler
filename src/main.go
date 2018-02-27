@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./token"
-	"./scanner"
 	"./parser"
+	"./scanner"
+	"./token"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -18,14 +18,19 @@ func readFile() []byte {
 	return bytes
 }
 
-func scan(input []byte) (*scanner.Scanner, chan token.Token) {
+func scan(input []byte) (*scanner.Scanner, []token.Token) {
 	s := scanner.NewScanner(input)
 	go s.Scan()
-	return s, s.Tokens
+	var allTokens []token.Token
+	for tok := <-s.Tokens; tok.Token != token.TOK_EOF; tok = <-s.Tokens {
+		allTokens = append(allTokens, tok)
+	}
+	return s, allTokens
 }
 
 func main() {
 	input := readFile()
+	fmt.Println(string(input))
 	_, tokens := scan(input)
 	p := parser.NewParser(tokens)
 	fmt.Println(p.Parse())
