@@ -4,25 +4,11 @@ import (
 	"../token"
 )
 
-/*
- * GRAMMAR
- * =======
- * expr    => mulTerm { +|- mulTerm } $
- * multerm => facTerm { *|/ facTerm }
- * facTerm => num ^ num | num
- * num     => int | ( expr )
- */
-
 // Entry point for the parser
 func (p *Parser) parseExpr() Expr {
 	return p.parseAddTerm()
 }
 
-// 1. Brackets, 2. Orders, 3. Mul, 4. Div, 5. Add, 6. Sub
-
-// 1^(-3*5)
-// (* (^ 1 -) 5)
-// (^ (* 3 5))
 func (p *Parser) parseAddTerm() Expr {
 	left := p.parseMulTerm()
 	if !isAddition(p.peek()) || isEOF(p.peek()) || isCloseParen(p.peek()) {

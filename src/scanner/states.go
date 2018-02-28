@@ -8,12 +8,12 @@ import (
 func startState(s *Scanner) stateFn {
 	ch := s.next()
 	switch {
-	case ch == eof:
-		s.emit(token.TOK_EOF)
-		return nil
 	case isWhitespace(ch):
 		s.ignore()
 		return startState
+	case ch == eof:
+		s.emit(token.TOK_EOF)
+		return nil
 	case isBracket(ch):
 		s.backup()
 		return scanBracket
@@ -47,13 +47,13 @@ func scanOperator(s *Scanner) stateFn {
 	ch := s.next()
 	switch ch {
 	case '+':
-		if isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
+		if s.pos == 1 || isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
 			return scanNumber
 		}
 		s.emit(token.TOK_ADD)
 		return startState
 	case '-':
-		if isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
+		if s.pos == 1 || isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
 			return scanNumber
 		}
 		s.emit(token.TOK_SUB)
@@ -109,4 +109,3 @@ func isOperator(ch rune) bool {
 func isWhitespace(ch rune) bool {
 	return ch == ' ' || ch == '\n' || ch == '\t' || ch == '\v' || ch == '\f' || ch == '\r'
 }
-
