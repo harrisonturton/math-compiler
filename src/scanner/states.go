@@ -47,15 +47,9 @@ func scanOperator(s *Scanner) stateFn {
 	ch := s.next()
 	switch ch {
 	case '+':
-		if s.pos == 1 || isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
-			return scanNumber
-		}
 		s.emit(token.TOK_ADD)
 		return startState
 	case '-':
-		if s.pos == 1 || isOperator(s.peekBack()) || isOpenParen(s.peekBack()) {
-			return scanNumber
-		}
 		s.emit(token.TOK_SUB)
 		return startState
 	case '*':

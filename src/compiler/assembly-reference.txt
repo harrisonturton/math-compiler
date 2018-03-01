@@ -1,0 +1,17 @@
+
+
+// r0 = r1 ^ r2
+exponent:
+  cmp r2, 0
+  bxeq lr
+  mul r0, r1
+  sub r2, 1
+  b exponent
+
++ - * / ^
+
+SUB - Done
+ADD - Done 
+DIV
+MUL - Done
+ORD - Done

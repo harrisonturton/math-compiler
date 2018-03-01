@@ -11,7 +11,7 @@ func (p *Parser) parseExpr() Expr {
 
 func (p *Parser) parseAddTerm() Expr {
 	left := p.parseMulTerm()
-	if !isAddition(p.peek()) || isEOF(p.peek()) || isCloseParen(p.peek()) {
+	if !isAddition(p.peek()) || isExpressionEnd(p.peek()) {
 		return left
 	}
 	for isAddition(p.peek()) {
@@ -24,7 +24,7 @@ func (p *Parser) parseAddTerm() Expr {
 
 func (p *Parser) parseMulTerm() Expr {
 	left := p.parseOrdTerm()
-	if isEOF(p.peek()) || !isMul(p.peek()) || isCloseParen(p.peek()) {
+	if !isMul(p.peek()) || isExpressionEnd(p.peek()) {
 		return left
 	}
 	for isMul(p.peek()) {
@@ -37,7 +37,7 @@ func (p *Parser) parseMulTerm() Expr {
 
 func (p *Parser) parseOrdTerm() Expr {
 	left := p.parseNumber()
-	if isEOF(p.peek()) || p.peek().Token != token.TOK_ORD || isCloseParen(p.peek()) {
+	if p.peek().Token != token.TOK_ORD || isExpressionEnd(p.peek()) {
 		return left
 	}
 	for p.peek().Token == token.TOK_ORD {
@@ -47,15 +47,34 @@ func (p *Parser) parseOrdTerm() Expr {
 	}
 	return left
 }
+
 func (p *Parser) parseNumber() Expr {
+	neg := false
+	if p.peek().Token == token.TOK_SUB {
+		neg = true
+		p.ignore()
+	}
+	if p.peek().Token == token.TOK_ADD {
+		p.ignore()
+	}
 	if p.peek().Token == token.TOK_LPAREN {
 		p.ignore() // Ignore starting TOK_LPAREN
-		expr := p.parseExpr()
+		expr := p.parseAddTerm()
 		p.ignore() // Ignore closing TOK_RPAREN
+		if neg {
+			return UnaryOp{token.Token{token.TOK_SUB, "-"}, expr}
+		}
 		return expr
 	}
 	tok := p.next()
+	if neg {
+		return UnaryOp{token.Token{token.TOK_SUB, "-"}, Number{tok}}
+	}
 	return Number{tok}
+}
+
+func isExpressionEnd(tok token.Token) bool {
+	return isEOF(tok) || isCloseParen(tok)
 }
 
 func isAddition(tok token.Token) bool {

@@ -2,6 +2,7 @@
 GRAMMAR
 =======
 expr     => mulTerm
+addTerm  => mulTerm {+|- mulTerm}
 multTerm => facTerm { *|/ facTerm }
 facTerm  => num ^ num | num
-num      => int | ( expr )
+num      => -int | -( expr )
