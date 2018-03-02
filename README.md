@@ -1,4 +1,4 @@
-# Math Compiler
+# Math Compiler [![Travis](https://travis-ci.org/harrisonturton/math-compiler.svg?branch=master)](https://travis-ci.org/harrisonturton/math-compiler)
 
 This project compiles simple arithmetic into ARM v7 assembly.
 
