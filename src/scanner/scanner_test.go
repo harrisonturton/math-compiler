@@ -32,16 +32,19 @@ var input2 = testCase{
 	expected: []token.Token{
 		{token.TOK_NUMBER, "1"},
 		{token.TOK_ADD, "+"},
-		{token.TOK_NUMBER, "-2"},
+		{token.TOK_SUB, "-"},
+		{token.TOK_NUMBER, "2"},
 	},
 }
 
 var input3 = testCase{
 	input: []byte("+1.123+-2.0"),
 	expected: []token.Token{
-		{token.TOK_NUMBER, "+1.123"},
 		{token.TOK_ADD, "+"},
-		{token.TOK_NUMBER, "-2.0"},
+		{token.TOK_NUMBER, "1.123"},
+		{token.TOK_ADD, "+"},
+		{token.TOK_SUB, "-"},
+		{token.TOK_NUMBER, "2.0"},
 	},
 }
 
