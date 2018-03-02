@@ -8,9 +8,11 @@ It can currently scan & parse arithmetic expressions, but IR generation (Assembl
 
 **Progress**
 
-- [X] Create a non-ambiguous $LL(k)$ grammar
-- [X] Lexical analyzer (Scanner/Lexer)
+- [X] Create a non-ambiguous LL(k) grammar
+- [X] Scanner
+- [X] Tests for scanner
 - [X] Recursive descent parser
+- [X] Tests for parser
 - [ ] IR code generation (ARM Assembly)
 - [ ] Machine code generation (ARM v7)
 - [ ] Error Messages
