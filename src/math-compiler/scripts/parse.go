@@ -1,9 +1,9 @@
 package main
 
 import (
-	"../parser"
-	"../scanner"
-	"../token"
+	"math-compiler/parser"
+	"math-compiler/scanner"
+	"math-compiler/token"
 	"fmt"
 	"io/ioutil"
 	"os"

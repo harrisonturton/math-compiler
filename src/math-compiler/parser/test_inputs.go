@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"../token"
+	"math-compiler/token"
 )
 
 type testInput struct {

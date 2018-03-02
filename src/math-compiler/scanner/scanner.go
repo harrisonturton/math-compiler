@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"../token"
+	"math-compiler/token"
 	"fmt"
 	"strings"
 	"unicode/utf8"
