@@ -6,7 +6,7 @@ This is a learning project to understanding language development. It has a fully
 
 It can currently scan & parse arithmetic expressions, but IR generation (Assembly) is in progress.
 
-**Progress**
+**Roadmap**
 
 - [X] Create a non-ambiguous LL(k) grammar
 - [X] Scanner
