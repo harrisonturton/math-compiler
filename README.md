@@ -1,22 +1,38 @@
 # Math Compiler [![Travis](https://travis-ci.org/harrisonturton/math-compiler.svg?branch=master)](https://travis-ci.org/harrisonturton/math-compiler)
 
-This project compiles simple arithmetic into ARM v7 assembly.
+This project compiles arithmetic expressions into ARM assembly.
 
-This is a learning project to understanding language development. It has a fully-featured lexical analyzer & a recursive descent parser.
-
-It can currently scan & parse arithmetic expressions, but IR generation (Assembly) is in progress.
+Addition, subtraction & nested expressions are supported, with exponents & division in development.
 
 **Roadmap**
 
 - [X] Create a non-ambiguous LL(k) grammar
-- [X] Scanner
-- [X] Tests for scanner
-- [X] Recursive descent parser
-- [X] Tests for parser
-- [ ] IR code generation (ARM Assembly)
-- [ ] Machine code generation (ARM v7)
+- [x] Scanner
+- [x] Recursive descent parser
+- [x] IR code generation (ARM Assembly)
+    - [x] Addition / Subtraction
+    - [ ] Exponents
+    - [ ] Integer Division
+- [ ] Testing
+    - [x] Scanner (61.9% coverage)
+    - [x] Parser (72.6% coverage)
+    - [ ] Codegen
 - [ ] Error Messages
 
+
+
+
+## Details
+
+This is a learning project to implement the major parts of a compiler. It's overkill for simple math, but allows us to understand the full dev pipeline.
+
+**Features:**
+
+* Full lexical analyzer
+	* based on [Rob Pike's presentation](https://www.youtube.com/watch?v=HxaD_trXwRE)
+* Recursive Descent Parser
+	* Parses concurrently with the lexer
+* Assembly code generation
 
 
 ## Installation
@@ -30,8 +46,6 @@ This project does not require any special dependencies.
 
 
 ## Usage
-
-Only scanning (lexing) and parsing are supported - compilation is still in development.
 
 These are shell scripts to examine the behaviour of the scanner/parser.
 
@@ -57,17 +71,33 @@ TOK_EOF
 
 #### Parsing
 
-```bash
+```shell
 $ go run /src/scripts/parse.go -m "1+2"
 (+ 1 2)
 ```
 
-```
+```shell
 $ go run /src/scripts/parse.go filename.txt
 (+ 1 (* 3 4))
 ```
 
+#### Compiling
 
+```shell
+$ go run /src/compiler/compiler.go -m "1+(3-2)"
+MOV r0, 1
+PUSH {r0}
+MOV r0, 3
+PUSH {r0}
+MOV r1, 2
+PUSH {r1}
+POP {r0, r1}
+SUB r0, r1, r0
+PUSH {r0}
+POP {r0, r1}
+ADD r0, r1
+PUSH {r0}
+```
 
 ## License
 
