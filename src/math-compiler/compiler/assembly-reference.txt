@@ -1,17 +1,32 @@
 
+(+ 7 (- 3 2))
+MOV	 r0, 7
+PUSH r0
+MOV  r0, 3
+PUSH r0
+MOV  r1, 2
+PUSH r1
+POP {r0, r1}
+SUB r0, r1
+PUSH r0
 
-// r0 = r1 ^ r2
-exponent:
-  cmp r2, 0
-  bxeq lr
-  mul r0, r1
-  sub r2, 1
-  b exponent
 
-+ - * / ^
+1. Have expression - (+ (- (* 1 2) 3) (+ 4 5))
+2. Push each to stack in reverse polish notation
+3. 1 2 * 3 - 4 5 + +
+4. Do the following for each item:
+	if NUMBER, PUSH
+	if BINARY, POP x2 AND PUSH RESULT
+	if UNARY,  POP x1 AND PUSH RESULT
 
-SUB - Done
-ADD - Done 
-DIV
-MUL - Done
-ORD - Done
+
+PUSHING
+=======
+1 2 +
+mov r0, 1		-- Store 1
+push {r0}		-- Push 1
+mov r1, 2		-- Store 2 (Note that it's in different register)
+push {r1}		-- Push 2
+pop {r0, r1}	-- Pop 1 and 2
+add r0, r1		-- Add together, accumulate in r0
+push {r0}		-- Push r0

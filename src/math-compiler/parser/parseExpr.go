@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"math-compiler/token"
+	"../token"
 )
 
 // Entry point for the parser

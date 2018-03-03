@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"math-compiler/token"
+	"../token"
 	"strings"
 )
 
