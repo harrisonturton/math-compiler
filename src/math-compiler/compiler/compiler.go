@@ -1,103 +1,87 @@
-package main
+package compiler
 
 import (
-	"fmt"
 	"../parser"
-	"../scanner"
 	"../token"
-	"os"
+	"fmt"
 )
 
-type Compiler struct {
-	ast parser.Expr
-}
-
-func NewCompiler(ast parser.Expr) *Compiler {
-	return &Compiler{ast}
-}
-
-func (c *Compiler) compile(expr parser.Expr) string {
-	switch expr.(type) {
+// Generate target assembly for AST specified in /parser/ast
+func Compile(ast parser.Expr) string {
+	switch ast.(type) {
 	case parser.Number:
-		num := expr.(parser.Number)
-		return c.compileNumber(num)
+		num := ast.(parser.Number)
+		return compileNumber(num)
+	case parser.UnaryOp:
+		unaryOp := ast.(parser.UnaryOp)
+		return compileUnaryOp(unaryOp)
 	case parser.BinaryOp:
-		binOp := expr.(parser.BinaryOp)
-		return c.compileBinaryOp(binOp)
+		binaryOp := ast.(parser.BinaryOp)
+		return compileBinaryOp(binaryOp)
 	}
-	return "Compilation finished."
+	return ""
 }
 
-func (c *Compiler) compileNumber(num parser.Number) string {
-	return fmt.Sprintf("MOV r0, %s", num.Token.Value)
+// Generate target code for a Number
+func compileNumber(num parser.Number) string {
+	return fmt.Sprintf("MOV r0, %s\nPUSH {r0}", num.Token.Value)
 }
 
-func (c *Compiler) compileBinaryOp(binOp parser.BinaryOp) string {
+func compileUnaryOp(unaryOp parser.UnaryOp) string {
 	result := ""
-	switch binOp.Left.(type) {
+	switch unaryOp.Right.(type) {
 	case parser.Number:
-		num := binOp.Left.(parser.Number)
-		result += fmt.Sprintf("\nMOV r0, %s", num.Token.Value)
+		num := unaryOp.Right.(parser.Number)
+		result += compileNumber(num)
+	case parser.UnaryOp:
+		innerUnaryOp := unaryOp.Right.(parser.UnaryOp)
+		result += compileUnaryOp(innerUnaryOp)
+	case parser.BinaryOp:
+		binaryOp := unaryOp.Right.(parser.BinaryOp)
+		result += compileBinaryOp(binaryOp)
+	}
+	result += "\nPOP {r0}"
+	switch unaryOp.Op.Token {
+	case token.TOK_ADD:
 		result += "\nPUSH {r0}"
-	case parser.BinaryOp:
-		b := binOp.Left.(parser.BinaryOp)
-		result += c.compileBinaryOp(b)
+	case token.TOK_SUB:
+		result += "\nSUB r0, 0, r0"
+		result += "\nPUSH {r0}"
 	}
-	switch binOp.Right.(type) {
-	case parser.Number:
-		num := binOp.Right.(parser.Number)
-		result += fmt.Sprintf("\nMOV r1, %s", num.Token.Value)
-		result += "\nPUSH {r1}"
-	case parser.BinaryOp:
-		b := binOp.Right.(parser.BinaryOp)
-		result += c.compileBinaryOp(b)
-	}
+	return result
+}
+
+// Generate target code for a Binary Op
+func compileBinaryOp(binaryOp parser.BinaryOp) string {
+	result := ""
+	result += compileBinaryLeaf(binaryOp.Left, true)
+	result += compileBinaryLeaf(binaryOp.Right, false)
 	result += "\nPOP {r0, r1}"
-	switch binOp.Op.Token {
+	switch binaryOp.Op.Token {
 	case token.TOK_ADD:
 		result += "\nADD r0, r1"
 	case token.TOK_SUB:
-		result += "\nSUB r0, r1, r0"
+		result += "\nSUB r0, r1"
 	}
 	result += "\nPUSH {r0}"
 	return result
 }
 
-func parseBytes(input []byte) parser.Expr {
-	tokens := scan(input)
-	p := parser.NewParser(tokens)
-	expr := p.Parse()
-	fmt.Println(expr)
-	return expr
-}
-
-func scan(input []byte) []token.Token {
-	s := scanner.NewScanner(input)
-	go s.Scan()
-	var allTokens []token.Token
-	for tok := range s.Tokens {
-		allTokens = append(allTokens, tok)
+func compileBinaryLeaf(leaf parser.Expr, isLeft bool) string {
+	register := "r0"
+	if !isLeft {
+		register = "r1"
 	}
-	return allTokens
-}
-
-func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("parse -m <input>")
-		os.Exit(1)
+	switch leaf.(type) {
+	case parser.Number:
+		num := leaf.(parser.Number)
+		return fmt.Sprintf("\nMOV %s, %s", register, num.Token.Value)
+	case parser.UnaryOp:
+		unaryOp := leaf.(parser.UnaryOp)
+		return compileUnaryOp(unaryOp)
+	case parser.BinaryOp:
+		binaryOp := leaf.(parser.BinaryOp)
+		return compileBinaryOp(binaryOp)
 	}
-	if os.Args[1] != "-m" {
-		fmt.Println("Need -m")
-		os.Exit(1)	
-	}
-	expr := parseBytes(append([]byte(os.Args[2]), []byte("\r")...))
-	/*expr := parser.BinaryOp{
-		parser.Number{token.Token{token.TOK_NUMBER, "3"}},
-		token.Token{token.TOK_ADD, "+"},
-		parser.Number{token.Token{token.TOK_NUMBER, "4"}},
-	}*/
-	//expr := parser.Number{token.Token{token.TOK_NUMBER, "3"}}
-	//expr := parseBytes([]byte("1+2\r"))
-	c := NewCompiler(expr)
-	fmt.Println(c.compile(expr))
+	return ""
 }
