@@ -84,7 +84,7 @@ $ go run /src/scripts/parse.go filename.txt
 #### Compiling
 
 ```shell
-$ go run /src/compiler/compiler.go -m "1+(3-2)"
+$ go run /src/scripts/compile.go -m "1+(3-2)"
 MOV r0, 1
 PUSH {r0}
 MOV r0, 3
