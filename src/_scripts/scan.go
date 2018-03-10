@@ -1,7 +1,7 @@
 package main
 
 import (
-	"math-compiler/scanner"
+	"math-compiler/src/scanner"
 	"fmt"
 	"io/ioutil"
 	"os"

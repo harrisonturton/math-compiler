@@ -16,12 +16,13 @@ branchToLR:
   bx lr`
 
   func Compile(ast parser.Expr) string {
-	  result := ""
+	  result := "main:"
 	  result += compileRoot(ast)
+	  result += "\n  b finish"
+	  result += "\n" + exponent
 	  result += "\nfinish:"
 	  result += "\n  nop"
 	  result += "\n  b finish"
-	  result += "\n" + exponent
 	  return result
   }
 
@@ -42,7 +43,7 @@ func compileRoot(ast parser.Expr) string {
 }
 
 func compileNumber(num parser.Number) string {
-	return fmt.Sprintf("\nMOV r0, %s\nPUSH {r0}", num.Token.Value)	
+	return fmt.Sprintf("\n  MOV r0, %s\n  PUSH {r0}", num.Token.Value)	
 }
 
 func compileUnaryOp(unaryOp parser.UnaryOp) string {
@@ -58,12 +59,12 @@ func compileUnaryOp(unaryOp parser.UnaryOp) string {
 		binaryOp := unaryOp.Right.(parser.BinaryOp)
 		result += compileBinaryOp(binaryOp)
 	}
-	result += "\nPOP {r0}"
+	result += "\n  POP {r0}"
 	switch unaryOp.Op.Token {
 	case token.TOK_ADD:
-		result += "\nPUSH {r0}"
+		result += "\n  PUSH {r0}"
 	case token.TOK_SUB:
-		result += "\nSUB r0, 0, r0"
+		result += "\n  SUB r0, 0, r0"
 	}
 	return result
 }
@@ -74,23 +75,23 @@ func compileBinaryOp(binaryOp parser.BinaryOp) string {
 	result += compileRoot(binaryOp.Right)
 	switch binaryOp.Op.Token {
 	case token.TOK_ADD:
-		result += "\nPOP {r0, r1}"
-		result += "\nADD r0, r1"
+		result += "\n  POP {r0, r1}"
+		result += "\n  ADD r0, r1"
 	case token.TOK_SUB:
-		result += "\nPOP {r0, r1}"
-		result += "\nSUB r0, r1, r0"
+		result += "\n  POP {r0, r1}"
+		result += "\n  SUB r0, r1, r0"
 	case token.TOK_MUL:
-		result += "\nPOP {r0, r1}"
-		result += "\nMUL r0, r1"
+		result += "\n  POP {r0, r1}"
+		result += "\n  MUL r0, r1"
 	case token.TOK_DIV:
-		result += "\nPOP {r0, r1}"
-		result += "\nSDIV r0, r1, r0"
+		result += "\n  POP {r0, r1}"
+		result += "\n  SDIV r0, r1, r0"
 	case token.TOK_ORD:
-		result += "\nPOP {r1, r2}"
-		result += "\nMOV r0, 1"
-		result += "\nbl exponent"
+		result += "\n  POP {r1, r2}"
+		result += "\n  MOV r0, 1"
+		result += "\n  bl exponent"
 	}
-	result += "\nPUSH {r0}"
+	result += "\n  PUSH {r0}"
 	return result
 }
 
