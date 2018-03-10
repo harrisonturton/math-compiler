@@ -1,15 +1,24 @@
-
-(+ 7 (- 3 2))
-MOV	 r0, 7
-PUSH r0
-MOV  r0, 3
-PUSH r0
-MOV  r1, 2
-PUSH r1
-POP {r0, r1}
-SUB r0, r1
-PUSH r0
-
+main:
+	mov r0, 1     // The accumulator for the exponent
+	mov r1, 2     // The base, i.e. "2" in 2^4
+	mov r2, 4     // The exponent, i.e. "4" in 2^4
+	bl exponent   // r0 = r1 ^ r2
+	mov r3, 5     // Arbitrary code to check 
+	mov r4, 6     // branching back after subroutine
+	b finish      // Skip exponent subroutine
+exponent:
+	// r0 = r1 ^ r2
+	cmp r2, 0
+	//it eq
+	//bxeq lr
+	beq branchToLR
+	mul r0, r1
+	sub r2, 1
+	b exponent
+branchToLR:
+	bx lr
+finish:
+	nop
 
 1. Have expression - (+ (- (* 1 2) 3) (+ 4 5))
 2. Push each to stack in reverse polish notation
