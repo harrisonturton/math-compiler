@@ -2,7 +2,13 @@
 
 This project compiles arithmetic expressions into ARM assembly.
 
-Addition, subtraction & nested expressions are supported, with exponents & division in development.
+Supports:
+- Addition
+- Subtraction
+- Multiplcation
+- Division
+- Exponents
+- Nested Expressions
 
 **Roadmap**
 
@@ -11,8 +17,8 @@ Addition, subtraction & nested expressions are supported, with exponents & divis
 - [x] Recursive descent parser
 - [x] IR code generation (ARM Assembly)
     - [x] Addition / Subtraction
-    - [ ] Exponents
-    - [ ] Integer Division
+    - [X] Exponents
+    - [X] Integer Division
 - [ ] Testing
     - [x] Scanner (61.9% coverage)
     - [x] Parser (72.6% coverage)
