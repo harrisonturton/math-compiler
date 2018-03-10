@@ -6,19 +6,39 @@ import (
 	"fmt"
 )
 
-func Compile(ast parser.Expr) string {
+const exponent = `exponent:
+  cmp r1, 0
+  beq branchToLR
+  mul r0, r2
+  sub r1, 1
+  b exponent
+branchToLR:
+  bx lr`
+
+  func Compile(ast parser.Expr) string {
+	  result := ""
+	  result += compileRoot(ast)
+	  result += "\nfinish:"
+	  result += "\n  nop"
+	  result += "\n  b finish"
+	  result += "\n" + exponent
+	  return result
+  }
+
+func compileRoot(ast parser.Expr) string {
+	result := ""
 	switch ast.(type) {
 	case parser.Number:
 		num := ast.(parser.Number)
-		return compileNumber(num)
+		result += compileNumber(num)
 	case parser.UnaryOp:
 		unaryOp := ast.(parser.UnaryOp)
-		return compileUnaryOp(unaryOp)
+		result += compileUnaryOp(unaryOp)
 	case parser.BinaryOp:
 		binaryOp := ast.(parser.BinaryOp)
-		return compileBinaryOp(binaryOp)
+		result += compileBinaryOp(binaryOp)
 	}
-	return ""
+	return result
 }
 
 func compileNumber(num parser.Number) string {
@@ -50,18 +70,25 @@ func compileUnaryOp(unaryOp parser.UnaryOp) string {
 
 func compileBinaryOp(binaryOp parser.BinaryOp) string {
 	result := ""
-	result += Compile(binaryOp.Left)
-	result += Compile(binaryOp.Right)
-	result += "\nPOP {r0, r1}"
+	result += compileRoot(binaryOp.Left)
+	result += compileRoot(binaryOp.Right)
 	switch binaryOp.Op.Token {
 	case token.TOK_ADD:
+		result += "\nPOP {r0, r1}"
 		result += "\nADD r0, r1"
 	case token.TOK_SUB:
+		result += "\nPOP {r0, r1}"
 		result += "\nSUB r0, r1, r0"
 	case token.TOK_MUL:
+		result += "\nPOP {r0, r1}"
 		result += "\nMUL r0, r1"
 	case token.TOK_DIV:
+		result += "\nPOP {r0, r1}"
 		result += "\nSDIV r0, r1, r0"
+	case token.TOK_ORD:
+		result += "\nPOP {r1, r2}"
+		result += "\nMOV r0, 1"
+		result += "\nbl exponent"
 	}
 	result += "\nPUSH {r0}"
 	return result
