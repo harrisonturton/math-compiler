@@ -1,45 +1,19 @@
 # Math Compiler [![Travis](https://travis-ci.org/harrisonturton/math-compiler.svg?branch=master)](https://travis-ci.org/harrisonturton/math-compiler)
 
-This project compiles arithmetic expressions into ARM assembly.
+This project compiles any arithmetic expression into ARM assembly.
 
-Supports:
-- Addition
-- Subtraction
-- Multiplcation
-- Division
-- Exponents
-- Nested Expressions
+**Not production-ready.** This is for me to learn the compiler pipeline.
 
-**Roadmap**
-
-- [X] Create a non-ambiguous LL(k) grammar
-- [x] Scanner
-- [x] Recursive descent parser
-- [x] IR code generation (ARM Assembly)
-    - [x] Addition / Subtraction
-    - [X] Exponents
-    - [X] Integer Division
-- [ ] Testing
-    - [x] Scanner (61.9% coverage)
-    - [x] Parser (72.6% coverage)
-    - [ ] Codegen
-- [ ] Error Messages
-
-
-
-
-## Details
-
-This is a learning project to implement the major parts of a compiler. It's overkill for simple math, but allows us to understand the full dev pipeline.
-
-**Features:**
-
-* Full lexical analyzer
-	* based on [Rob Pike's presentation](https://www.youtube.com/watch?v=HxaD_trXwRE)
-* Recursive Descent Parser
-	* Parses concurrently with the lexer
-* Assembly code generation
-
+- Full lexical analyser
+  - Based on  [Rob Pike's presentation](https://www.youtube.com/watch?v=HxaD_trXwRE)
+- Recursive Descent Parser
+  - Lexes & Parses concurrently
+- Assembly Code generation
+- Full arithmetic support (excluding floating-point numbers)
+  - Addition / Subtraction
+  - Multiplication / Integer Division
+  - Exponents
+  - Nested expressions (Parenthesized)
 
 ## Installation
 
@@ -53,58 +27,59 @@ This project does not require any special dependencies.
 
 ## Usage
 
-These are shell scripts to examine the behaviour of the scanner/parser.
+This project does not have a dedicated binary. Instead, it provides scripts to scan, parse, or compile input.
 
-Each script can be passed a string, or a file.
+Long output has been trunctated using `…`.
 
-#### Scanning
+#### Compiling
 
-```
-$ go run /src/scripts/scan.go -m "1+2"
-TOK_NUMBER 1
-TOK_ADD +
-TOK_NUMBER 2
-TOK_EOF
-```
-
-```
-$ go run /src/scripts/scan.go filename.txt
-TOK_NUMBER 1
-TOK_ADD +
-TOK_NUMBER 2
-TOK_EOF
+```bash
+$ go run math-compiler/src/scripts/compile.go -m "1+(2^4)"
+main:
+  MOV r0, 1
+...
+branchToLR:
+  bx lr
 ```
 
 #### Parsing
 
-```shell
-$ go run /src/scripts/parse.go -m "1+2"
-(+ 1 2)
-```
-
-```shell
-$ go run /src/scripts/parse.go filename.txt
-(+ 1 (* 3 4))
+```bash
+$ go run math-compiler/src/scripts/parse.go -m "1+(2^4)"
+(+ 1 (^ 2 3))
 ```
 
 #### Compiling
 
-```shell
-$ go run /src/scripts/compile.go -m "1+(3-2)"
-MOV r0, 1
-PUSH {r0}
-MOV r0, 3
-PUSH {r0}
-MOV r1, 2
-PUSH {r1}
-POP {r0, r1}
-SUB r0, r1, r0
-PUSH {r0}
-POP {r0, r1}
-ADD r0, r1
-PUSH {r0}
+```bash
+$ go run math-compiler/src/scripts/scan.go -m "1+(2^4)"
+TOK_NUMBER 1
+TOK_ADD +
+...
+TOK_RPAREN )
+TOK_EOF
 ```
+
+
+
+## Roadmap
+
+- [x] Unambiguous LL(k) grammar for arithmetic
+- [x] Scanner (Lexer)
+- [x] Recursive Descent Parser
+- [x] IR code generation (ARM Assembly)
+    - [x] Addition / Subtraction
+    - [x] Multiplication / Division
+    - [x] Exponents
+- [ ] Full Testing
+    - [x] Scanner (61.9% coverage)
+    - [x] Parser (72.6% coverage)
+    - [ ] Code generation
+- [ ] Error Messages
+
+
 
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
