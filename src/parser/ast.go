@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"../token"
+	"math-compiler/src/token"
 )
 
 type Expr interface {

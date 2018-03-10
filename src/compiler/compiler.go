@@ -1,8 +1,8 @@
 package compiler
 
 import (
-	"../parser"
-	"../token"
+	"math-compiler/src/parser"
+	"math-compiler/src/token"
 	"fmt"
 )
 

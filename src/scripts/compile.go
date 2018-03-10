@@ -1,10 +1,10 @@
 package main
 
 import (
-	"../compiler"
-	"../parser"
-	"../token"
-	"../scanner"
+	"math-compiler/src/compiler"
+	"math-compiler/src/parser"
+	"math-compiler/src/token"
+	"math-compiler/src/scanner"
 	"fmt"
 	"io/ioutil"
 	"os"
