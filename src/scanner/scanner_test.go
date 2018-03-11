@@ -2,90 +2,125 @@ package scanner
 
 import (
 	"math-compiler/src/token"
-	"fmt"
 	"testing"
 )
 
-type testCase struct {
-	input    []byte
-	expected []token.Token
-}
-
-// Used to easily test multiple different inputs
-var testCases = [...]testCase{
-	input1,
-	input2,
-	input3,
-}
-
-var input1 = testCase{
-	input: []byte("1+2"),
-	expected: []token.Token{
-		{token.TOK_NUMBER, "1"},
-		{token.TOK_ADD, "+"},
-		{token.TOK_NUMBER, "2"},
-	},
-}
-
-var input2 = testCase{
-	input: []byte("1+-2"),
-	expected: []token.Token{
-		{token.TOK_NUMBER, "1"},
-		{token.TOK_ADD, "+"},
-		{token.TOK_SUB, "-"},
-		{token.TOK_NUMBER, "2"},
-	},
-}
-
-var input3 = testCase{
-	input: []byte("+1.123+-2.0"),
-	expected: []token.Token{
-		{token.TOK_ADD, "+"},
-		{token.TOK_NUMBER, "1.123"},
-		{token.TOK_ADD, "+"},
-		{token.TOK_SUB, "-"},
-		{token.TOK_NUMBER, "2.0"},
-	},
-}
-
-func TestScanner(t *testing.T) {
-	for _, input := range testCases {
-		testScan(input, t)
+func TestNewScanner(t *testing.T) {
+	input := []byte("1+2")
+	s := NewScanner(input)	
+	if len(s.source) != len(input) {
+		t.Errorf("Expected scanners.source to be %s, got %s", input, s.source)
+	}
+	if s.start != 0 {
+		t.Errorf("Expected scanner.start to be %s, got %s", 0, s.start)
+	}
+	if s.pos != 0 {
+		t.Errorf("Expected scanner.pos to be %s, got %s", 0, s.pos)
+	}
+	if s.width != 0 {
+		t.Errorf("Expected scanner.width to be %s, got %s", 0, s.width)
 	}
 }
 
-func testScan(input testCase, t *testing.T) {
-	input.input = append(input.input, []byte("\r")...) // Required to be valid utf-8 file
-	result := scanAllTokens(input.input)
-	if !testEq(result, input.expected) {
-		t.Error(fmt.Sprintf("Expected %s but recieved %s", input.expected, result))
-	}
-}
-
-func scanAllTokens(input []byte) []token.Token {
+func TestNext(t *testing.T) {
+	input := []byte("1")
 	s := NewScanner(input)
-	go s.Scan()
-	var allTokens []token.Token
-	for tok := <-s.Tokens; tok.Token != token.TOK_EOF; tok = <-s.Tokens {
-		allTokens = append(allTokens, tok)
+
+	next := s.next()
+	if next != '1' {
+		t.Errorf("Expected next() to be %s, got %s", '1', next)
 	}
-	return allTokens
+	if s.width != 1 {
+		t.Errorf("Expected width to be %s, got %s", 1, s.width)
+	}
+
+	next = s.next()
+	if next != rune(-1) {
+		t.Errorf("Expected EOF rune, got %s", next)
+	}
 }
 
-func testEq(a, b []token.Token) bool {
-	if a == nil && b == nil {
-		return true
+func TestEmit(t *testing.T) {
+	return
+	input := []byte("3+2")
+	s := NewScanner(input)
+
+	s.next()
+	s.emit(token.TOK_NUMBER)
+	tok := <-s.Tokens
+	expected := token.Token{token.TOK_NUMBER, "3"}
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
 	}
-	if a == nil || b == nil {
-		return false
+
+	s.next()
+	s.emit(token.TOK_ADD)
+	tok = <-s.Tokens
+	expected = token.Token{token.TOK_ADD, "+"}
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
 	}
-	if len(a) != len(b) {
-		return false
+}
+
+func TestPeek(t *testing.T) {
+	input := []byte("3+2")
+	s := NewScanner(input)
+	tok := s.peek()
+	expected := '3'
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
 	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
+
+	s.next()
+	tok = s.peek()
+	expected = '+'
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
 	}
-	return true
+}
+
+func TestPeekBack(t *testing.T) {
+	input := []byte("3+2")
+	s := NewScanner(input)
+
+	s.next()
+	s.next()
+	tok := s.peekBack()
+	expected := '3'
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
+	}
+
+	s.next()
+	tok = s.peekBack()
+	expected = '+'
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
+	}
+}
+
+func TestBackup(t *testing.T) {
+	input := []byte("3")
+	s := NewScanner(input)
+
+	s.next()
+	s.backup()
+	expected := '3'
+	tok := s.next()
+	if tok != expected {
+		t.Errorf("Expected token %s, recieved %s", expected, tok)
+	}
+}
+
+func TestIgnore(t *testing.T) {
+	input := []byte("3+2")
+	s := NewScanner(input)
+
+	s.next()
+	s.ignore()
+	tok := s.next()
+	expected := '+'
+	if tok != expected {
+		t.Errorf("Expected ignored token %s, recieved %s", expected, tok)
+	}
 }

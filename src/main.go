@@ -21,7 +21,8 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 2 {
-		parseFile(os.Args[1])
+		result := parseFile(os.Args[1])
+		fmt.Println(result)
 		os.Exit(0)
 	}
 	if len(os.Args) != 3 {
@@ -29,26 +30,25 @@ func main() {
 		os.Exit(1)
 	}
 	if os.Args[1] == "-m" || os.Args[1] == "--manual" {
-		parseMessage(os.Args[2])
+		result := parseMessage(os.Args[2])
+		fmt.Println(result)
 	}
 }
 
-func parseFile(path string) {
+func parseFile(path string) string {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	expr := parseBytes(bytes)
-	compiled := compile(expr)
-	fmt.Println(compiled)
+	return compile(expr)
 }
 
-func parseMessage(message string) {
+func parseMessage(message string) string {
 	input := append([]byte(message), '\r')
 	expr := parseBytes(input)
-	compiled := compile(expr)
-	fmt.Println(compiled)
+	return compile(expr)
 }
 
 func parseBytes(bytes []byte) parser.Expr {
