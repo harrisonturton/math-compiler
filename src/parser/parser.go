@@ -7,13 +7,14 @@ import (
 type Parser struct {
 	tokens []token.Token
 	pos    int
+	errors string
 }
 
 func NewParser(tokens []token.Token) *Parser {
-	return &Parser{tokens, 0}
+	return &Parser{tokens, 0, ""}
 }
 
-func (p *Parser) Parse() Expr {
+func (p *Parser) Parse() (Expr, error) {
 	return p.parseExpr()
 }
 

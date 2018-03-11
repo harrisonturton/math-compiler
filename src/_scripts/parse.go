@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"errors"
 )
 
 func main() {
@@ -35,17 +36,30 @@ func parseMessage(message string) {
 }
 
 func parseBytes(input []byte) {
-	tokens := scan(input)
+	tokens, err := scan(input)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+		return
+	}
 	p := parser.NewParser(tokens)
-	fmt.Println(p.Parse())
+	expr, err := p.Parse()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println(expr)
 }
 
-func scan(input []byte) []token.Token {
+func scan(input []byte) ([]token.Token, error) {
 	s := scanner.NewScanner(input)
 	go s.Scan()
 	var allTokens []token.Token
 	for tok := range s.Tokens {
+		if tok.Token == token.TOK_ERR {
+			return nil, errors.New("SYNTAX ERROR: " + tok.Value)
+		}
 		allTokens = append(allTokens, tok)
 	}
-	return allTokens
+	return allTokens, nil
 }

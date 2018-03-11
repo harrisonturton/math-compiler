@@ -2,53 +2,82 @@ package parser
 
 import (
 	"math-compiler/src/token"
+	"errors"
+	"fmt"
 )
 
 // Entry point for the parser
-func (p *Parser) parseExpr() Expr {
+func (p *Parser) parseExpr() (Expr, error) {
 	return p.parseAddTerm()
 }
 
-func (p *Parser) parseAddTerm() Expr {
-	left := p.parseMulTerm()
+func (p *Parser) parseAddTerm() (Expr, error) {
+	left, err := p.parseMulTerm()
+	if err != nil {
+		return nil, err
+	}
 	if !isAddition(p.peek()) || isExpressionEnd(p.peek()) {
-		return left
+		return left, nil
 	}
 	for isAddition(p.peek()) {
 		op := p.next()
-		right := p.parseMulTerm()
+		if p.peek().Token == token.TOK_EOF {
+			return nil, errors.New("ERROR: Unexpected EOF. Have you forgotten a number?")
+		}
+		right, err := p.parseMulTerm()
+		if err != nil {
+			return nil, err
+		}
 		left = BinaryOp{left, op, right}
 	}
-	return left
+	return left, nil
 }
 
-func (p *Parser) parseMulTerm() Expr {
-	left := p.parseOrdTerm()
+func (p *Parser) parseMulTerm() (Expr, error) {
+	left, err := p.parseOrdTerm()
+	if err != nil {
+		return nil, err
+	}
 	if !isMul(p.peek()) || isExpressionEnd(p.peek()) {
-		return left
+		return left, nil
 	}
 	for isMul(p.peek()) {
 		op := p.next()
-		right := p.parseOrdTerm()
+		if p.peek().Token == token.TOK_EOF {
+			return nil, errors.New("ERROR: Unexpected EOF. Have you forgotten a number?")
+		}
+		right, err := p.parseOrdTerm()
+		if err != nil {
+			return nil, err
+		}
 		left = BinaryOp{left, op, right}
 	}
-	return left
+	return left, nil
 }
 
-func (p *Parser) parseOrdTerm() Expr {
-	left := p.parseNumber()
+func (p *Parser) parseOrdTerm() (Expr, error) {
+	left, err := p.parseNumber()
+	if err != nil {
+		return nil, err
+	}
 	if p.peek().Token != token.TOK_ORD || isExpressionEnd(p.peek()) {
-		return left
+		return left, nil
 	}
 	for p.peek().Token == token.TOK_ORD {
 		op := p.next()
-		right := p.parseNumber()
+		if p.peek().Token == token.TOK_EOF {
+			return nil, errors.New("ERROR: Unexpected EOF. Have you forgotten a number?")
+		}
+		right, err := p.parseNumber()
+		if err != nil {
+			return nil, err
+		}
 		left = BinaryOp{left, op, right}
 	}
-	return left
+	return left, nil
 }
 
-func (p *Parser) parseNumber() Expr {
+func (p *Parser) parseNumber() (Expr, error) {
 	neg := false
 	if p.peek().Token == token.TOK_SUB {
 		neg = true
@@ -59,18 +88,24 @@ func (p *Parser) parseNumber() Expr {
 	}
 	if p.peek().Token == token.TOK_LPAREN {
 		p.ignore() // Ignore starting TOK_LPAREN
-		expr := p.parseAddTerm()
+		expr, err := p.parseAddTerm()
+		if err != nil {
+			return nil, err
+		}
 		p.ignore() // Ignore closing TOK_RPAREN
 		if neg {
-			return UnaryOp{token.Token{token.TOK_SUB, "-"}, expr}
+			return UnaryOp{token.Token{token.TOK_SUB, "-"}, expr}, nil
 		}
-		return expr
+		return expr, nil
 	}
 	tok := p.next()
-	if neg {
-		return UnaryOp{token.Token{token.TOK_SUB, "-"}, Number{tok}}
+	if tok.Token != token.TOK_NUMBER {
+		return nil, errors.New(fmt.Sprintf("Expected number, recieved %s", tok))
 	}
-	return Number{tok}
+	if neg {
+		return UnaryOp{token.Token{token.TOK_SUB, "-"}, Number{tok}}, nil
+	}
+	return Number{tok}, nil
 }
 
 func isExpressionEnd(tok token.Token) bool {
