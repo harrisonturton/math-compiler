@@ -2,6 +2,8 @@
 
 This project compiles any arithmetic expression into ARM assembly.
 
+Test this interactively on the [project website](https://harrisonturton.github.io/math-compiler/)
+
 **Not production-ready.** This is for me to learn the compiler pipeline.
 
 - Full lexical analyser
@@ -27,14 +29,14 @@ This project does not require any special dependencies.
 
 ## Usage
 
-This project does not have a dedicated binary. Instead, it provides scripts to scan, parse, or compile input.
+Go to https://harrisonturton.github.io/math-compiler/ to test this project interactively.
 
-Long output has been trunctated using `…`.
+Alternatively, this project can be compiled and used from the commandline: (This requires you to [build it from source](#build-from-source))
 
 #### Compiling
 
 ```bash
-$ go run math-compiler/src/scripts/compile.go -m "1+(2^4)"
+$ ./main "1+(2^4)"
 main:
   MOV r0, 1
 ...
@@ -42,22 +44,25 @@ branchToLR:
   bx lr
 ```
 
-#### Parsing
+## Build from Source
 
-```bash
-$ go run math-compiler/src/scripts/parse.go -m "1+(2^4)"
-(+ 1 (^ 2 3))
+To use this project from the commandline, you'll need to build it.
+
+Requirements:
+* Working Go installation
+
+Download the project as specified in [Installation](#installation), and place it in your `$GOROOT`.
+
+In the project root, run:
+
+```
+$ cd build && go build ../src/main
 ```
 
-#### Compiling
+A `main` binary should be created in the `/build` subdirectory. You can run this as so:
 
-```bash
-$ go run math-compiler/src/scripts/scan.go -m "1+(2^4)"
-TOK_NUMBER 1
-TOK_ADD +
-...
-TOK_RPAREN )
-TOK_EOF
+```
+./main "1+2*3"
 ```
 
 
@@ -76,6 +81,9 @@ TOK_EOF
     - [x] Parser (72.6% coverage)
     - [ ] Code generation
 - [ ] Error Messages
+    - [X] Syntax Errors
+    - [X] Basic parsing errors
+    - [ ] Errors for unbalanced parenthesis
 
 
 
