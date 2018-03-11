@@ -19290,8 +19290,8 @@ $packages["math-compiler/src/parser"] = (function() {
 	};
 	Parser.prototype.parseOrdTerm = function() { return this.$val.parseOrdTerm(); };
 	Parser.ptr.prototype.parseNumber = function() {
-		var _r, _r$1, _r$2, _tuple, err, expr, neg, p, tok, x, x$1, x$2, x$3, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _tuple = $f._tuple; err = $f.err; expr = $f.expr; neg = $f.neg; p = $f.p; tok = $f.tok; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var _r, _r$1, _r$2, _r$3, _r$4, _tuple, err, expr, neg, p, tok, x, x$1, x$2, x$3, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; _r = $f._r; _r$1 = $f._r$1; _r$2 = $f._r$2; _r$3 = $f._r$3; _r$4 = $f._r$4; _tuple = $f._tuple; err = $f.err; expr = $f.expr; neg = $f.neg; p = $f.p; tok = $f.tok; x = $f.x; x$1 = $f.x$1; x$2 = $f.x$2; x$3 = $f.x$3; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		p = this;
 		neg = false;
 		if (p.peek().Token === 3) {
@@ -19312,6 +19312,13 @@ $packages["math-compiler/src/parser"] = (function() {
 			if (!($interfaceIsEqual(err, $ifaceNil))) {
 				$s = -1; return [$ifaceNil, err];
 			}
+			/* */ if (!((p.peek().Token === 9))) { $s = 4; continue; }
+			/* */ $s = 5; continue;
+			/* if (!((p.peek().Token === 9))) { */ case 4:
+				_r$1 = fmt.Sprintf("Expected closing parenthesis, recieved %s %s", new sliceType$1([new token.TokenType(p.peek().Token), new $String(p.peek().Value)])); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
+				_r$2 = errors.New(_r$1); /* */ $s = 7; case 7: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
+				$s = -1; return [$ifaceNil, _r$2];
+			/* } */ case 5:
 			p.ignore();
 			if (neg) {
 				$s = -1; return [(x = new UnaryOp.ptr(new token.Token.ptr(3, "-"), expr), new x.constructor.elem(x)), $ifaceNil];
@@ -19319,18 +19326,18 @@ $packages["math-compiler/src/parser"] = (function() {
 			$s = -1; return [expr, $ifaceNil];
 		/* } */ case 2:
 		tok = $clone(p.next(), token.Token);
-		/* */ if (!((tok.Token === 2))) { $s = 4; continue; }
-		/* */ $s = 5; continue;
-		/* if (!((tok.Token === 2))) { */ case 4:
-			_r$1 = fmt.Sprintf("Expected number, recieved %s", new sliceType$1([new tok.constructor.elem(tok)])); /* */ $s = 6; case 6: if($c) { $c = false; _r$1 = _r$1.$blk(); } if (_r$1 && _r$1.$blk !== undefined) { break s; }
-			_r$2 = errors.New(_r$1); /* */ $s = 7; case 7: if($c) { $c = false; _r$2 = _r$2.$blk(); } if (_r$2 && _r$2.$blk !== undefined) { break s; }
-			$s = -1; return [$ifaceNil, _r$2];
-		/* } */ case 5:
+		/* */ if (!((tok.Token === 2))) { $s = 8; continue; }
+		/* */ $s = 9; continue;
+		/* if (!((tok.Token === 2))) { */ case 8:
+			_r$3 = fmt.Sprintf("Expected number, recieved %s", new sliceType$1([new tok.constructor.elem(tok)])); /* */ $s = 10; case 10: if($c) { $c = false; _r$3 = _r$3.$blk(); } if (_r$3 && _r$3.$blk !== undefined) { break s; }
+			_r$4 = errors.New(_r$3); /* */ $s = 11; case 11: if($c) { $c = false; _r$4 = _r$4.$blk(); } if (_r$4 && _r$4.$blk !== undefined) { break s; }
+			$s = -1; return [$ifaceNil, _r$4];
+		/* } */ case 9:
 		if (neg) {
 			$s = -1; return [(x$1 = new UnaryOp.ptr(new token.Token.ptr(3, "-"), (x$2 = new Number.ptr($clone(tok, token.Token)), new x$2.constructor.elem(x$2))), new x$1.constructor.elem(x$1)), $ifaceNil];
 		}
 		$s = -1; return [(x$3 = new Number.ptr($clone(tok, token.Token)), new x$3.constructor.elem(x$3)), $ifaceNil];
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Parser.ptr.prototype.parseNumber }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._tuple = _tuple; $f.err = err; $f.expr = expr; $f.neg = neg; $f.p = p; $f.tok = tok; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.$s = $s; $f.$r = $r; return $f;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Parser.ptr.prototype.parseNumber }; } $f._r = _r; $f._r$1 = _r$1; $f._r$2 = _r$2; $f._r$3 = _r$3; $f._r$4 = _r$4; $f._tuple = _tuple; $f.err = err; $f.expr = expr; $f.neg = neg; $f.p = p; $f.tok = tok; $f.x = x; $f.x$1 = x$1; $f.x$2 = x$2; $f.x$3 = x$3; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Parser.prototype.parseNumber = function() { return this.$val.parseNumber(); };
 	isExpressionEnd = function(tok) {
