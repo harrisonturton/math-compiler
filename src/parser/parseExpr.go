@@ -92,6 +92,9 @@ func (p *Parser) parseNumber() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
+		if p.peek().Token != token.TOK_RPAREN {
+			return nil, errors.New(fmt.Sprintf("Expected closing parenthesis, recieved %s %s", p.peek().Token, p.peek().Value))
+		}
 		p.ignore() // Ignore closing TOK_RPAREN
 		if neg {
 			return UnaryOp{token.Token{token.TOK_SUB, "-"}, expr}, nil
