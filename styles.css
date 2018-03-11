@@ -1,0 +1,222 @@
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+}
+
+input {
+	font-family: "Roboto", sans-serif;
+	font-weight: 300;
+	color: rgba(0,0,0,0.8);
+	font-size: 1.1em;
+	border: none;
+}
+
+h1 {
+	font-family: "Roboto", sans-serif;
+	font-size: 2em;
+	margin-bottom: 0;
+	font-weight: 300;
+	color: rgba(0,0,0,0.8);
+}
+
+h2 {
+	font-family: "Roboto", sans-serif;
+	font-size: 1em;
+	font-style: italic;
+	font-weight: 300;
+	color: #2C98A3;
+	margin: 0;
+	margin-left: 20px;
+}
+
+a {
+	color: #2C98A3;
+	text-decoration: none;
+}
+
+a:hover {
+	padding-bottom: 1px;
+	border-bottom: 1px solid #2C98A3;
+}
+
+ul {
+	margin-top: 5px;
+	margin-left: 20px;
+	margin-bottom: 30px;
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+li, p {
+	font-family: "Roboto", sans-serif;
+	font-weight: 300;
+	font-size: 1em;
+	line-height: 1.6;
+	color: rgba(0,0,0,0.65);
+}
+
+li {
+	font-size: 0.9em;
+	letter-spacing: 0.025em;
+	opacity: 0.9;
+}
+
+.floating {
+	position: fixed;
+	left: 50vw;
+	transform: TranslateX(-50%);
+	z-index: 10;
+	transition: box-shadow 0.25s;
+	box-shadow: -3px 3px 13px rgba(0,0,0,0.25);
+}
+
+.floating:hover {
+	box-shadow: -3px 5px 15px rgba(0,0,0,0.3);
+}
+
+
+.container { 
+	display: flex;
+	flex-direction: column;
+	justify-content: 'center';
+}
+
+.left-container {
+	width: 100vw;
+	height: auto;
+	background-color: white;
+	padding: 20px;
+}
+
+.right-container {
+	width: 100vw;
+	height: auto;
+	background: linear-gradient(#2D9CA6, #1D758A, #004F7E);
+}
+
+.text-container {
+	width: 90vw;
+}
+
+.generated-container {
+	width: 90vw;
+	display: flex;
+	justify-content: 'center';
+}
+
+#generated {
+	position: relative;
+	padding-top: 10vh;
+	padding-bottom: 10vh;
+	left: 15vw;
+	white-space: pre-wrap;
+	font-family: "Courier New", sans-serif;
+	font-size: 1em;
+	line-height: 1.5;
+	color: white;
+}
+
+#input-box {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	display: block;
+	top: 40px;
+	width: 75vw;
+	border-left: 5px solid #2C98A3;
+	margin-left: -30px;
+	background-color: white;
+	padding: 15px;
+}
+
+.input-label {
+	display: block;
+	margin-bottom: 5px;
+	font-family: "Roboto", sans-serif;
+	font-size: 0.6em;
+	font-weight: 400;
+	letter-spacing: 0.05em;
+	color: black;
+	opacity: 0.65;
+}
+
+@media (min-width: 800px) {
+	.container {
+		flex-direction: row;
+	}
+
+	.right-container {
+		flex: 1;
+		min-height: 100vh;
+	}
+
+	.left-container {
+		flex: 1;
+		height: 100vh;
+	}
+
+	.floating {
+		position: fixed;
+		left: 50vw;
+		transform: TranslateX(-50%);
+		z-index: 10;
+		transition: box-shadow 0.25s;
+		box-shadow: -3px 3px 13px rgba(0,0,0,0.25);
+	}
+
+	.floating:hover {
+		box-shadow: -3px 5px 15px rgba(0,0,0,0.3);
+	}
+
+	@keyframes hover-shadow {
+		from {
+			box-shadow: -3px 3px 13px rgba(0,0,0,0.25);
+		}
+		to {
+			box-shadow: -3px 3px 20px rgba(0,0,0,0.5);
+		}
+	}
+
+	#input-box {
+		position: fixed;
+		display: flex;
+		flex-direction: column;
+		top: 50px;
+		width: 200px;
+		padding: 10px;
+		margin: 0;
+		background-color: white;
+		border-left: 5px solid #2C98A3;
+		transition: width 0.25s;
+	}
+
+	#input-box:hover {
+		width: 250px;
+		transition: width 0.25s;
+	}
+
+	.text-container {
+		position: fixed;
+		margin-top: 40px;
+		margin-left: 50px;
+		width: 30vw;
+	}
+
+	.generated-container {
+		width: 15vw;
+	}
+
+	#generated {
+		position: relative;
+		padding-top: 10vh;
+		padding-bottom: 10vh;
+		left: 15vw;
+
+		white-space: pre-wrap;
+		font-family: "Courier New", sans-serif;
+		font-size: 0.9em;
+		line-height: 1.5;
+		color: white;
+	}
+}
