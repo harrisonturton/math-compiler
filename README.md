@@ -2,7 +2,7 @@
 
 This project compiles any arithmetic expression into ARM assembly.
 
-Test this interactively on the [project website](https://harrisonturton.github.io/math-compiler/)
+Test this interactively on the [project website.](https://harrisonturton.github.io/math-compiler/)
 
 **Not production-ready.** This is for me to learn the compiler pipeline.
 
@@ -29,7 +29,7 @@ This project does not require any special dependencies.
 
 ## Usage
 
-Go to https://harrisonturton.github.io/math-compiler/ to test this project interactively.
+Go to the [project website.](https://harrisonturton.github.io/math-compiler/) to test this project interactively.
 
 Alternatively, this project can be compiled and used from the commandline: (This requires you to [build it from source](#build-from-source))
 
@@ -56,7 +56,7 @@ Download the project as specified in [Installation](#installation), and place it
 In the project root, run:
 
 ```
-$ cd build && go build ../src/main
+$ cd build && go build ../src/main.go
 ```
 
 A `main` binary should be created in the `/build` subdirectory. You can run this as so:
