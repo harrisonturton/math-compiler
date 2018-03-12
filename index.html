@@ -49,7 +49,7 @@ main:
   pop {r0, r1}
   add r0, r1
   push {r0}
-  mov r0, 3
+  mov r0, 4
   push {r0}
   pop {r1, r2}
   mov r0, 1
@@ -73,7 +73,6 @@ finish:
 		</div>
 		<script src="intro.js"></script>
 		<script>
-			$("#generated").text(Compile(input));
 			$("#input").on("propertychange change keyup paste input", function(){
 				var input = $("#input").val()
 				$("#generated").text(Compile(input));
