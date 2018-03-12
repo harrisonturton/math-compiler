@@ -42,31 +42,31 @@
 			<div class="generated-container">
 				<pre id="generated">
 main:
-	mov r0, 1
-	push {r0}
-	mov r0, 2
-	push {r0}
-	pop {r0, r1}
-	add r0, r1
-	push {r0}
-	mov r0, 3
-	push {r0}
-	pop {r1, r2}
-	mov r0, 1
-	bl exponent
-	push {r0}
-	b finish
+  mov r0, 1
+  push {r0}
+  mov r0, 2
+  push {r0}
+  pop {r0, r1}
+  add r0, r1
+  push {r0}
+  mov r0, 3
+  push {r0}
+  pop {r1, r2}
+  mov r0, 1
+  bl exponent
+  push {r0}
+  b finish
 exponent:
-	cmp r1, 0
-	beq branchToLR
-	mul r0, r2
-	sub r1, 1
-	b exponent
+  cmp r1, 0
+  beq branchToLR
+  mul r0, r2
+  sub r1, 1
+  b exponent
 branchToLR:
-	bx lr
+  bx lr
 finish:
-	nop
-	b finish
+  nop
+  b finish
 				</pre>
 			</div>
 			</div>
